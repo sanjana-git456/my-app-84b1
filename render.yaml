@@ -1,0 +1,27 @@
+databases:
+  - name: my-app-84b1-api-8a6e-db
+    plan: free
+
+services:
+  - type: web
+    name: my-app-84b1-api-8a6e
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: CORS_ORIGINS
+        value: https://sanjana-git456.github.io
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-app-84b1-api-8a6e-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
